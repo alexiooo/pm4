@@ -58,22 +58,11 @@ class BigNumber {
         // Adds number to the back (Least Significant)
         // Will take all next numbers if num is in a list
         void appendNumber(Number *num) {
-            if (num==nullptr) return;
-
-            num->prev = tail;
-
-            if( tail != nullptr ){
-                tail->next = num;
-            }
-            Number *new_tail = num;
-            while (new_tail->next != nullptr){
-                new_tail = new_tail->next;
-            }
-            tail = new_tail;
-
-            if(head == nullptr){
-                head = num;
-            }
+            Number *old_tail = tail;
+            head = nullptr;
+            tail = nullptr;
+            prependNumber(num);
+            prependNumber(old_tail);
         }
 
         // Deletes all numbers, dereferences head and tail
