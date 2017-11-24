@@ -137,7 +137,7 @@ class BigNumber {
         {
             if(head != nullptr)
             {
-                cout << head->value << endl;
+                cout << head->value;
 
                 for(Number *num = head->next; num != nullptr; num = num->next)
                 {
@@ -185,66 +185,33 @@ class BigNumber {
         }
 
         // Adds two BigNumbers, stores result in this BigNumber
-        void add(BigNumber *A, BigNumber *B)
+        void add(BigNumber A, BigNumber B)
         {
-            Number *numA = A->tail;
-            Number *numB = B->tail;
+            Number *numA = A.tail;
+            Number *numB = B.tail;
+            // 'overflow' is bounded and thus cannot overflow
             int overflow = 0;
-            int max_value = pow(10, DIGITS_PER_NUM);
+            const int max_power_of_ten = powl(10, DIGITS_PER_NUM);
 
             clearNumbers();
 
-            while (numA != nullptr && numB != nullptr)
+            // Self referencing
+            static Number zero = { 0, &zero, &zero };
+            
+            if(numA == nullptr) numA = &zero;
+            if(numB == nullptr) numB = &zero;
+
+            while (numA != &zero || numB != &zero || overflow > 0)
             {
                 Number *num = new Number;
                 int sum = numA->value + numB->value + overflow;
 
-                num->value = sum % max_value;
-                overflow = sum - num->value;
+                num->value = sum % max_power_of_ten;
+                overflow = (sum - num->value) / max_power_of_ten;
                 prependNumber(num);
 
-                cerr << numA->value << " + " << numB->value << " = " << num->value << " +" << overflow << endl;
-
-                numA = numA->prev;
-                numB = numB->prev;
-            }
-            if (numA != nullptr)
-            {
-                while (overflow>0 && numA!=nullptr)
-                {
-                    Number *num = new Number;
-                    int sum = numA->value + overflow;
-
-                    num->value = sum % max_value;
-                    overflow = sum - num->value;
-                    prependNumber(num);
-
-                    numA = numA->prev;
-                }
-                if(numA != nullptr){
-                    prependNumber(numA);
-                }
-            } else if (numB != nullptr)
-            {
-                while (overflow>0 && numB!=nullptr)
-                {
-                    Number *num = new Number;
-                    int sum = numB->value + overflow;
-
-                    num->value = sum % max_value;
-                    overflow = sum - num->value;
-                    prependNumber(num);
-
-                    numB = numB->prev;
-                }
-                if(numB != nullptr){
-                    prependNumber(numB);
-                }
-            } else if (overflow>0)
-            {
-                Number *num = new Number;
-                num->value = overflow;
-                prependNumber(num);
+                numA = numA->prev != nullptr ? numA->prev : &zero;
+                numB = numB->prev != nullptr ? numB->prev : &zero;
             }
         }
 };
