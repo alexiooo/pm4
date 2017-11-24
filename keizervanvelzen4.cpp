@@ -32,7 +32,6 @@ class BigNumber {
 
         Number *head = nullptr;  // Most significant number(s)
         Number *tail = nullptr;  // Least significant number(s)
-        int n = 0;  // Amount of numbers in our list
 
         // Adds number in front (Most Significant numbers)
         // Will take all previous numbers if num is in a list
