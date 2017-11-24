@@ -28,7 +28,7 @@ class BigNumber {
 
     private:
         // Amount of digits in one number object
-        const static int digits_per_number = 2;
+        const static int DIGITS_PER_NUM = 2;
 
         Number *head = nullptr;  // Most significant number(s)
         Number *tail = nullptr;  // Least significant number(s)
@@ -65,7 +65,7 @@ class BigNumber {
             prependNumber(old_tail);
         }
 
-        // Deletes all numbers, dereferences head and tail
+        // Deletes all numbers, set head and tail to nullptr
         void clearNumbers(){
             Number *num = head;
             Number *next;
@@ -75,21 +75,20 @@ class BigNumber {
                 delete num;
                 num = next;
             }
+
             head = nullptr;
             tail = nullptr;
         }
 
+
     public:
-
-
-
         // Prints the value of this BigNumber to cout
         void print()
         {
             Number *num = head;
             while (num != nullptr)
             {
-                cout << setw(digits_per_number) << setfill('0') << num->value;
+                cout << setw(DIGITS_PER_NUM) << setfill('0') << num->value;
                 num = num->next;
             }
             cout << endl;
@@ -107,7 +106,7 @@ class BigNumber {
             {
                 if ('0' <= kar && kar <= '9')
                 {
-                    if (chars_read >= digits_per_number)
+                    if (chars_read >= DIGITS_PER_NUM)
                     {
                         appendNumber(num);
                         num = new Number;
@@ -130,7 +129,7 @@ class BigNumber {
             Number *numA = A->tail;
             Number *numB = B->tail;
             int overflow = 0;
-            int max_value = pow(10, digits_per_number);
+            int max_value = pow(10, DIGITS_PER_NUM);
 
             clearNumbers();
 
