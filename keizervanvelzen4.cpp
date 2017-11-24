@@ -155,13 +155,12 @@ class BigNumber {
         {
             Number *num = new Number;
             int chars_read = 0;
-            char kar = readCharacter();
 
-            do
+            for(char kar = readCharacter(); kar != '\n'; kar = cin.get())
             {
                 if ('0' <= kar && kar <= '9')
                 {
-                    if (chars_read >= DIGITS_PER_NUM)
+                    if (chars_read == DIGITS_PER_NUM)
                     {
                         appendNumber(num);
                         num = new Number;
@@ -171,11 +170,18 @@ class BigNumber {
                     num->value += kar - '0';
                     chars_read++;
                 }
-                kar = cin.get();
             }
-            while(kar != '\n');
 
-            appendNumber(num);
+            if(chars_read > 0)
+            {
+                if(tail == nullptr) appendNumber(num);
+                else {
+                    shift(chars_read);
+                    tail->value += num->value;
+                    delete num;
+                }
+            }
+            else delete num;
         }
 
         // Adds two BigNumbers, stores result in this BigNumber
