@@ -65,7 +65,7 @@ class BigNumber {
         }
 
         // Deletes all numbers, set head and tail to nullptr
-        void clearNumbers(){
+        void clearNumbers() {
             Number *num = head;
             Number *next;
 
@@ -79,18 +79,74 @@ class BigNumber {
             tail = nullptr;
         }
 
+        bool isZero() {
+            for(Number *n = head; n != nullptr; n = n->next)
+            {
+                if(n->value != 0) return false;
+            }
+
+            return true;
+        }
+
+        // Multiply this number with 10^n
+        // Long long is at least 64 bits, thus to overflow
+        // this parameter you need to create a number with
+        // 2^64 - 1 digits which is impossible on today's hardware
+        void shift(unsigned long long n) {
+            
+            if(n == 0) return;
+            else if(n == 1) {
+                
+                if(isZero()) return;
+
+                char overflow_digit = 0;
+                int max_power_of_ten = powl(10, DIGITS_PER_NUM);
+
+                for(Number *n = tail; n != nullptr; n = n->prev)
+                {
+                    n->value *= 10;
+                    n->value += overflow_digit;
+                    overflow_digit = n->value / max_power_of_ten;
+                    n->value = n->value % max_power_of_ten;
+                }
+
+                if(overflow_digit != 0)
+                {
+                    Number *n = new Number();
+                    n->value = overflow_digit;
+                    prependNumber(n);
+                }
+            }
+            else {
+
+                for(unsigned i = 0; i < n/DIGITS_PER_NUM; i++)
+                {
+                    Number *n = new Number();
+                    n->value = 0;
+                    appendNumber(n);
+                }
+                
+                for(unsigned i = 0; i < n % DIGITS_PER_NUM; i++) shift(1);
+            }
+        }
 
     public:
         // Prints the value of this BigNumber to cout
+        // without leading zeros
         void print()
         {
-            Number *num = head;
-            while (num != nullptr)
+            if(head != nullptr)
             {
-                cout << setw(DIGITS_PER_NUM) << setfill('0') << num->value;
-                num = num->next;
+                cout << head->value << endl;
+
+                for(Number *num = head->next; num != nullptr; num = num->next)
+                {
+                    cout << setw(DIGITS_PER_NUM) << setfill('0') << num->value;
+                }
+
+                cout << endl;
             }
-            cout << endl;
+            else cout << "0" << endl;
         }
 
         // Reads a Big Number from cin, until a newline is encountered
