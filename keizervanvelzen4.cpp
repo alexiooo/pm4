@@ -20,8 +20,8 @@ struct number {
 
     // Next goes from head to tail
     // That is, from Most Significant to Least Significant
-    number * next = nullptr;
-    number * prev = nullptr;
+    number *next = nullptr;
+    number *prev = nullptr;
 };
 
 class BigNumber {
@@ -30,13 +30,13 @@ class BigNumber {
         // Amount of digits in one number object
         const static int digits_per_number = 2;
 
-        number * head = nullptr;  // Most significant number(s)
-        number * tail = nullptr;  // Least significant number(s)
+        number *head = nullptr;  // Most significant number(s)
+        number *tail = nullptr;  // Least significant number(s)
         int n = 0;  // Amount of numbers in our list
 
         // Adds number in front (Most Significant numbers)
         // Will take all previous numbers if num is in a list
-        void prependNumber(number * num) {
+        void prependNumber(number *num) {
             if (num==nullptr) return;
 
             num->next = head;
@@ -57,7 +57,7 @@ class BigNumber {
 
         // Adds number to the back (Least Significant)
         // Will take all next numbers if num is in a list
-        void appendNumber(number * num) {
+        void appendNumber(number *num) {
             if (num==nullptr) return;
 
             num->prev = tail;
@@ -78,8 +78,8 @@ class BigNumber {
 
         // Deletes all numbers, dereferences head and tail
         void clearNumbers(){
-            number * num = head;
-            number * next;
+            number *num = head;
+            number *next;
 
             while (num != nullptr) {
                 next = num->next;
@@ -97,7 +97,7 @@ class BigNumber {
         // Prints the value of this BigNumber to cout
         void print()
         {
-            number * num = head;
+            number *num = head;
             while (num != nullptr)
             {
                 cout << setw(digits_per_number) << setfill('0') << num->value;
@@ -110,7 +110,7 @@ class BigNumber {
         // Ignores leading newlines and non-digits
         void read()
         {
-            number * num = new number;
+            number *num = new number;
             int chars_read = 0;
             char kar = readCharacter();
 
@@ -138,8 +138,8 @@ class BigNumber {
         // Adds two BigNumbers, stores result in this BigNumber
         void add(BigNumber *A, BigNumber *B)
         {
-            number * numA = A->tail;
-            number * numB = B->tail;
+            number *numA = A->tail;
+            number *numB = B->tail;
             int overflow = 0;
             int max_value = pow(10, digits_per_number);
 
@@ -147,7 +147,7 @@ class BigNumber {
 
             while (numA != nullptr && numB != nullptr)
             {
-                number * num = new number;
+                number *num = new number;
                 int sum = numA->value + numB->value + overflow;
 
                 num->value = sum % max_value;
@@ -163,7 +163,7 @@ class BigNumber {
             {
                 while (overflow>0 && numA!=nullptr)
                 {
-                    number * num = new number;
+                    number *num = new number;
                     int sum = numA->value + overflow;
 
                     num->value = sum % max_value;
@@ -179,7 +179,7 @@ class BigNumber {
             {
                 while (overflow>0 && numB!=nullptr)
                 {
-                    number * num = new number;
+                    number *num = new number;
                     int sum = numB->value + overflow;
 
                     num->value = sum % max_value;
@@ -193,7 +193,7 @@ class BigNumber {
                 }
             } else if (overflow>0)
             {
-                number * num = new number;
+                number *num = new number;
                 num->value = overflow;
                 prependNumber(num);
             }
