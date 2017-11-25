@@ -38,279 +38,278 @@ struct Number {
 };
 
 class BigNumber {
-    private:
-        // Amount of digits in one number object
-        const static int DIGITS_PER_NUM = 9;
-        const static int MAX_POWER_TEN = powl(10, DIGITS_PER_NUM);
 
-        Number *head = nullptr;  // Most significant number(s)
-        Number *tail = nullptr;  // Least significant number(s)
+    // Amount of digits in one number object
+    const static int DIGITS_PER_NUM = 9;
+    const static int MAX_POWER_TEN = powl(10, DIGITS_PER_NUM);
 
-        // Adds number in front (Most Significant numbers)
-        // Will take all previous numbers if num is in a list
-        void prependNumber(Number *num) {
-            if (num==nullptr) return;
+    Number *head = nullptr;  // Most significant number(s)
+    Number *tail = nullptr;  // Least significant number(s)
 
-            num->next = head;
+    // Adds number in front (Most Significant numbers)
+    // Will take all previous numbers if num is in a list
+    void prependNumber(Number *num) {
+        if (num==nullptr) return;
 
-            if (head != nullptr){
-                head->prev = num;
-            }
-            Number *new_head = num;
-            while (new_head->prev != nullptr){
-                new_head = new_head->prev;
-            }
-            head = new_head;
+        num->next = head;
 
-            if (tail == nullptr){
-                tail = num;
-            }
+        if (head != nullptr){
+            head->prev = num;
+        }
+        Number *new_head = num;
+        while (new_head->prev != nullptr){
+            new_head = new_head->prev;
+        }
+        head = new_head;
+
+        if (tail == nullptr){
+            tail = num;
+        }
+    }
+
+    // Adds number to the back (Least Significant)
+    // Will take all next numbers if num is in a list
+    void appendNumber(Number *num) {
+        Number *old_tail = tail;
+        head = nullptr;
+        tail = nullptr;
+        prependNumber(num);
+        prependNumber(old_tail);
+    }
+
+    // Deletes all numbers, set head and tail to nullptr
+    void clearNumbers() {
+        Number *num = head;
+        Number *next;
+
+        while (num != nullptr) {
+            next = num->next;
+            delete num;
+            num = next;
         }
 
-        // Adds number to the back (Least Significant)
-        // Will take all next numbers if num is in a list
-        void appendNumber(Number *num) {
-            Number *old_tail = tail;
-            head = nullptr;
-            tail = nullptr;
-            prependNumber(num);
-            prependNumber(old_tail);
-        }
+        head = nullptr;
+        tail = nullptr;
+    }
 
-        // Deletes all numbers, set head and tail to nullptr
-        void clearNumbers() {
-            Number *num = head;
-            Number *next;
-
-            while (num != nullptr) {
-                next = num->next;
-                delete num;
-                num = next;
-            }
-
-            head = nullptr;
-            tail = nullptr;
-        }
-
-        bool isZero() {
-            for(Number *n = head; n != nullptr; n = n->next)
-            {
-                if(n->value != 0) return false;
-            }
-
-            return true;
-        }
-
-        // Multiply this number with 10^n
-        // Long long is at least 64 bits, thus to overflow
-        // this parameter you need to create a number with
-        // 2^64 - 1 digits which is impossible on today's hardware
-        void shift(unsigned long long n) {
-            
-            if(n == 0) return;
-            else if(n == 1) {
-                
-                if(isZero()) return;
-
-                char overflow_digit = 0;
-
-                for(Number *n = tail; n != nullptr; n = n->prev)
-                {
-                    n->value *= 10;
-                    n->value += overflow_digit;
-                    overflow_digit = n->value / MAX_POWER_TEN;
-                    n->value = n->value % MAX_POWER_TEN;
-                }
-
-                if(overflow_digit != 0)
-                {
-                    Number *n = new Number(overflow_digit);
-                    prependNumber(n);
-                }
-            }
-            else {
-
-                for(unsigned i = 0; i < n/DIGITS_PER_NUM; i++)
-                {
-                    Number *n = new Number();
-                    appendNumber(n);
-                }
-                
-                for(unsigned i = 0; i < n % DIGITS_PER_NUM; i++) shift(1);
-            }
-        }
-
-    public:
-
-        void setOne()
+    bool isZero() {
+        for(Number *n = head; n != nullptr; n = n->next)
         {
-            clearNumbers();
-            Number *n = new Number(1);
-            prependNumber(n);
+            if(n->value != 0) return false;
         }
+
+        return true;
+    }
+    
+    // Multiply this number with 10^n
+    // Long long is at least 64 bits, thus to overflow
+    // this parameter you need to create a number with
+    // 2^64 - 1 digits which is impossible on today's hardware
+    void shift(unsigned long long n) {
         
-        // Prints the value of this BigNumber to cout
-        // without leading zeros
-        void print()
-        {
-            if(head != nullptr)
-            {
-                for(Number *num = head; num != nullptr; num = num->next)
-                {
-                    cout << setw(DIGITS_PER_NUM) << setfill('0') << num->value;
-                }
+        if(n == 0) return;
+        else if(n == 1) {
+            
+            if(isZero()) return;
 
-                cout << endl;
+            char overflow_digit = 0;
+
+            for(Number *n = tail; n != nullptr; n = n->prev)
+            {
+                n->value *= 10;
+                n->value += overflow_digit;
+                overflow_digit = n->value / MAX_POWER_TEN;
+                n->value = n->value % MAX_POWER_TEN;
             }
-            else cout << "0" << endl;
+
+            if(overflow_digit != 0)
+            {
+                Number *n = new Number(overflow_digit);
+                prependNumber(n);
+            }
         }
+        else {
 
-        // Reads a Big Number from cin, until a newline is encountered
-        // Ignores leading newlines and non-digits
-        void read()
-        {
-            Number *num = new Number();
-            int chars_read = 0;
-
-            for(char kar = readCharacter(); kar != '\n'; kar = cin.get())
+            for(unsigned i = 0; i < n/DIGITS_PER_NUM; i++)
             {
-                if ('0' <= kar && kar <= '9')
-                {
-                    if (chars_read == DIGITS_PER_NUM)
-                    {
-                        appendNumber(num);
-                        num = new Number;
-                        chars_read = 0;
-                    }
-                    num->value *= 10;
-                    num->value += kar - '0';
-                    chars_read++;
-                }
+                Number *n = new Number();
+                appendNumber(n);
             }
-
-            if(chars_read > 0)
-            {
-                if(tail == nullptr) appendNumber(num);
-                else {
-                    shift(chars_read);
-                    tail->value += num->value;
-                    delete num;
-                }
-            }
-            else delete num;
+            
+            for(unsigned i = 0; i < n % DIGITS_PER_NUM; i++) shift(1);
         }
+    }
 
-        // Adds two BigNumbers, stores result in this BigNumber
-        void add(BigNumber A, BigNumber B, bool clear_numbers = true)
+public:
+    void setOne()
+    {
+        clearNumbers();
+        Number *n = new Number(1);
+        prependNumber(n);
+    }
+    
+    // Prints the value of this BigNumber to cout
+    // without leading zeros
+    void print()
+    {
+        if(head != nullptr)
         {
-            Number *numA = A.tail;
-            Number *numB = B.tail;
-
-            if(clear_numbers) clearNumbers();
-
-            // To put the result in
-            Number *numRes = tail;
-
-            int overflow = 0;
-
-            if(numA == nullptr) numA = Number::getZero();
-            if(numB == nullptr) numB = Number::getZero();
-
-            while (numA != Number::getZero()
-                    || numB != Number::getZero()
-                    || overflow > 0)
+            for(Number *num = head; num != nullptr; num = num->next)
             {
-                int sum = numA->value + numB->value + overflow;
+                cout << setw(DIGITS_PER_NUM) << setfill('0') << num->value;
+            }
 
-                if(numRes != nullptr) sum += numRes->value;
+            cout << endl;
+        }
+        else cout << "0" << endl;
+    }
 
-                int value = sum % MAX_POWER_TEN;
-                overflow = sum / MAX_POWER_TEN;
+    // Reads a Big Number from cin, until a newline is encountered
+    // Ignores leading newlines and non-digits
+    void read()
+    {
+        Number *num = new Number();
+        int chars_read = 0;
 
-                if(numRes == nullptr)
+        for(char kar = readCharacter(); kar != '\n'; kar = cin.get())
+        {
+            if ('0' <= kar && kar <= '9')
+            {
+                if (chars_read == DIGITS_PER_NUM)
                 {
-                    Number *n = new Number(value);
-                    prependNumber(n);
+                    appendNumber(num);
+                    num = new Number;
+                    chars_read = 0;
                 }
-                else 
-                {
-                    numRes->value = value;
-                }
-
-                numA = numA->prev != nullptr ? numA->prev : Number::getZero();
-                numB = numB->prev != nullptr ? numB->prev : Number::getZero();
-                numRes = numRes != nullptr ? numRes->prev : nullptr;
+                num->value *= 10;
+                num->value += kar - '0';
+                chars_read++;
             }
         }
 
-        void fibonacci(int n)
+        if(chars_read > 0)
         {
-            clearNumbers();
-
-            if(n <= 2) setOne();
+            if(tail == nullptr) appendNumber(num);
             else {
-                BigNumber zero;
-                BigNumber previous;
-                BigNumber current;
-
-                previous.setOne();
-                current.setOne();
-
-                // Temporal variable used to switch previous and current
-                BigNumber next;
-
-                for(int i = 2; i < n; i++)
-                {
-                    // Prevent add function from deleting numbers
-                    // which are pointed to by 'current'
-                    next.head = next.tail = nullptr;
-                    next.add(previous, current);
-
-                    previous = current;
-                    current = next;
-                }
-
-                *this = current;
+                shift(chars_read);
+                tail->value += num->value;
+                delete num;
             }
         }
+        else delete num;
+    }
 
+    // Adds two BigNumbers, stores result in this BigNumber
+    void add(BigNumber A, BigNumber B, bool clear_numbers = true)
+    {
+        Number *numA = A.tail;
+        Number *numB = B.tail;
 
-        void multiply(BigNumber a_big, BigNumber b_big)
+        if(clear_numbers) clearNumbers();
+
+        // To put the result in
+        Number *numRes = tail;
+
+        int overflow = 0;
+
+        if(numA == nullptr) numA = Number::getZero();
+        if(numB == nullptr) numB = Number::getZero();
+
+        while (numA != Number::getZero()
+                || numB != Number::getZero()
+                || overflow > 0)
         {
-            clearNumbers();
+            int sum = numA->value + numB->value + overflow;
 
-            BigNumber zero;
-            BigNumber sub_product;
+            if(numRes != nullptr) sum += numRes->value;
 
-            int overflow = 0;
-            int a_count = 0;
+            int value = sum % MAX_POWER_TEN;
+            overflow = sum / MAX_POWER_TEN;
 
-            for(Number *a = a_big.tail; a != nullptr; a = a->prev)
+            if(numRes == nullptr)
             {
-                sub_product.clearNumbers();
-                sub_product.shift(a_count * DIGITS_PER_NUM);
-                a_count += 1;
+                Number *n = new Number(value);
+                prependNumber(n);
+            }
+            else 
+            {
+                numRes->value = value;
+            }
 
-                for(Number *b = b_big.tail;
-                        b != Number::getZero() || overflow > 0;
-                        b = b->prev != nullptr ? b->prev : Number::getZero())
-                {
-                    // Maximum value is 999999999^2 which needs 64 bits to be represented
-                    unsigned long long product = a->value * (unsigned long long)b->value;
-                    product += overflow;
+            numA = numA->prev != nullptr ? numA->prev : Number::getZero();
+            numB = numB->prev != nullptr ? numB->prev : Number::getZero();
+            numRes = numRes != nullptr ? numRes->prev : nullptr;
+        }
+    }
 
-                    int value = product % MAX_POWER_TEN;
-                    overflow = product / MAX_POWER_TEN;
+    void fibonacci(int n)
+    {
+        clearNumbers();
 
-                    Number *n = new Number(value);
+        if(n <= 2) setOne();
+        else {
+            BigNumber zero;
+            BigNumber previous;
+            BigNumber current;
 
-                    sub_product.prependNumber(n);
-                    add(zero, sub_product, false);
+            previous.setOne();
+            current.setOne();
 
-                    n->value = 0;
-                }
+            // Temporal variable used to switch previous and current
+            BigNumber next;
+
+            for(int i = 2; i < n; i++)
+            {
+                // Prevent add function from deleting numbers
+                // which are pointed to by 'current'
+                next.head = next.tail = nullptr;
+                next.add(previous, current);
+
+                previous = current;
+                current = next;
+            }
+
+            *this = current;
+        }
+    }
+
+
+    void multiply(BigNumber a_big, BigNumber b_big)
+    {
+        clearNumbers();
+
+        BigNumber zero;
+        BigNumber sub_product;
+
+        int overflow = 0;
+        int a_count = 0;
+
+        for(Number *a = a_big.tail; a != nullptr; a = a->prev)
+        {
+            sub_product.clearNumbers();
+            sub_product.shift(a_count * DIGITS_PER_NUM);
+            a_count += 1;
+
+            for(Number *b = b_big.tail;
+                    b != Number::getZero() || overflow > 0;
+                    b = b->prev != nullptr ? b->prev : Number::getZero())
+            {
+                // Maximum value is 999999999^2 which needs 64 bits to be represented
+                unsigned long long product = a->value * (unsigned long long)b->value;
+                product += overflow;
+
+                int value = product % MAX_POWER_TEN;
+                overflow = product / MAX_POWER_TEN;
+
+                Number *n = new Number(value);
+
+                sub_product.prependNumber(n);
+                add(zero, sub_product, false);
+
+                n->value = 0;
             }
         }
+    }
 };
 
 int main() {
