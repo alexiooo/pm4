@@ -77,20 +77,6 @@ class BigNumber {
         prependNumber(old_tail);
     }
 
-    // Deletes all numbers, set head and tail to nullptr
-    void clearNumbers() {
-        Number *num = head;
-        Number *next;
-
-        while (num != nullptr) {
-            next = num->next;
-            delete num;
-            num = next;
-        }
-
-        head = nullptr;
-        tail = nullptr;
-    }
 
     bool isZero() {
         for(Number *n = head; n != nullptr; n = n->next)
@@ -141,6 +127,21 @@ class BigNumber {
     }
 
 public:
+    // Deletes all numbers, set head and tail to nullptr
+    void clearNumbers() {
+        Number *num = head;
+        Number *next;
+
+        while (num != nullptr) {
+            next = num->next;
+            delete num;
+            num = next;
+        }
+
+        head = nullptr;
+        tail = nullptr;
+    }
+
     void setOne()
     {
         clearNumbers();
@@ -265,10 +266,12 @@ public:
                 next.head = next.tail = nullptr;
                 next.add(previous, current);
 
+                previous.clearNumbers(); // Prevent memory leak
                 previous = current;
                 current = next;
             }
 
+            previous.clearNumbers(); // Prevent memory leak
             *this = current;
         }
     }
@@ -286,7 +289,6 @@ public:
 
         for(Number *a = a_big.tail; a != nullptr; a = a->prev)
         {
-            sub_product.clearNumbers();
             sub_product.shift(a_count * DIGITS_PER_NUM);
             a_count += 1;
 
@@ -308,6 +310,8 @@ public:
 
                 n->value = 0;
             }
+
+            sub_product.clearNumbers();
         }
     }
 };
