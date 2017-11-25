@@ -153,9 +153,7 @@ class BigNumber {
         {
             if(head != nullptr)
             {
-                cout << head->value;
-
-                for(Number *num = head->next; num != nullptr; num = num->next)
+                for(Number *num = head; num != nullptr; num = num->next)
                 {
                     cout << setw(DIGITS_PER_NUM) << setfill('0') << num->value;
                 }
