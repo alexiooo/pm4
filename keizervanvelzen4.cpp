@@ -22,6 +22,13 @@ struct Number {
     // That is, from Most Significant to Least Significant
     Number *next = nullptr;
     Number *prev = nullptr;
+
+    static Number *getZero() {
+        // Self referencing
+        static Number zero = { 0, &zero, &zero };
+
+        return &zero;
+    }
 };
 
 class BigNumber {
@@ -185,33 +192,89 @@ class BigNumber {
         }
 
         // Adds two BigNumbers, stores result in this BigNumber
-        void add(BigNumber A, BigNumber B)
+        void add(BigNumber A, BigNumber B, bool clear_numbers = true)
         {
             Number *numA = A.tail;
             Number *numB = B.tail;
-            // 'overflow' is bounded and thus cannot overflow
+
+            if(clear_numbers) clearNumbers();
+
+            // To put the result in
+            Number *numRes = tail;
+
             int overflow = 0;
+
             const int max_power_of_ten = powl(10, DIGITS_PER_NUM);
 
-            clearNumbers();
 
-            // Self referencing
-            static Number zero = { 0, &zero, &zero };
-            
-            if(numA == nullptr) numA = &zero;
-            if(numB == nullptr) numB = &zero;
+            if(numA == nullptr) numA = Number::getZero();
+            if(numB == nullptr) numB = Number::getZero();
 
-            while (numA != &zero || numB != &zero || overflow > 0)
+            while (numA != Number::getZero()
+                    || numB != Number::getZero()
+                    || overflow > 0)
             {
-                Number *num = new Number;
                 int sum = numA->value + numB->value + overflow;
 
-                num->value = sum % max_power_of_ten;
-                overflow = (sum - num->value) / max_power_of_ten;
-                prependNumber(num);
+                if(numRes != nullptr) sum += numRes->value;
 
-                numA = numA->prev != nullptr ? numA->prev : &zero;
-                numB = numB->prev != nullptr ? numB->prev : &zero;
+                int value = sum % max_power_of_ten;
+                overflow = sum / max_power_of_ten;
+
+                if(numRes == nullptr)
+                {
+                    Number *n = new Number;
+                    n->value = value;
+                    prependNumber(n);
+                }
+                else 
+                {
+                    numRes->value = value;
+                }
+
+                numA = numA->prev != nullptr ? numA->prev : Number::getZero();
+                numB = numB->prev != nullptr ? numB->prev : Number::getZero();
+                numRes = numRes != nullptr ? numRes->prev : nullptr;
+            }
+        }
+
+        void multiply(BigNumber a_big, BigNumber b_big)
+        {
+            clearNumbers();
+
+            BigNumber zero;
+            BigNumber sub_product;
+
+            const int max_power_of_ten = powl(10, DIGITS_PER_NUM);
+
+            int overflow = 0;
+            int a_count = 0;
+
+            for(Number *a = a_big.tail; a != nullptr; a = a->prev)
+            {
+                sub_product.clearNumbers();
+                sub_product.shift(a_count * DIGITS_PER_NUM);
+                a_count += 1;
+
+                for(Number *b = b_big.tail;
+                        b != Number::getZero() || overflow > 0;
+                        b = b->prev != nullptr ? b->prev : Number::getZero())
+                {
+                    // Maximum value is 999999999^2 which needs 64 bits to be represented
+                    unsigned long long product = a->value * (unsigned long long)b->value;
+                    product += overflow;
+
+                    int value = product % max_power_of_ten;
+                    overflow = product / max_power_of_ten;
+
+                    Number *n = new Number;
+                    n->value = value;
+
+                    sub_product.prependNumber(n);
+                    add(zero, sub_product, false);
+
+                    n->value = 0;
+                }
             }
         }
 };
