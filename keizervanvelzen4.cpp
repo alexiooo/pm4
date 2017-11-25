@@ -245,6 +245,38 @@ class BigNumber {
             }
         }
 
+        void fibonacci(int n)
+        {
+            clearNumbers();
+
+            if(n <= 2) setOne();
+            else {
+                BigNumber zero;
+                BigNumber previous;
+                BigNumber current;
+
+                previous.setOne();
+                current.setOne();
+
+                // Temporal variable used to switch previous and current
+                BigNumber next;
+
+                for(int i = 2; i < n; i++)
+                {
+                    // Prevent add function from deleting numbers
+                    // which are pointed to by 'current'
+                    next.head = next.tail = nullptr;
+                    next.add(previous, current);
+
+                    previous = current;
+                    current = next;
+                }
+
+                *this = current;
+            }
+        }
+
+
         void multiply(BigNumber a_big, BigNumber b_big)
         {
             clearNumbers();
