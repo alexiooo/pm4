@@ -25,17 +25,24 @@ struct Number {
 
     static Number *getZero() {
         // Self referencing
-        static Number zero = { 0, &zero, &zero };
-
+        static Number zero = Number(0, &zero, &zero);
         return &zero;
     }
+
+    Number() : value(0) {}
+
+    Number(int v) : value(v) {}
+
+    Number(int v, Number *next, Number *prev)
+        : value(v), next(next), prev(prev) {}
 };
 
 class BigNumber {
 
+
     private:
         // Amount of digits in one number object
-        const static int DIGITS_PER_NUM = 2;
+        const static int DIGITS_PER_NUM = 9;
 
         Number *head = nullptr;  // Most significant number(s)
         Number *tail = nullptr;  // Least significant number(s)
@@ -119,8 +126,7 @@ class BigNumber {
 
                 if(overflow_digit != 0)
                 {
-                    Number *n = new Number();
-                    n->value = overflow_digit;
+                    Number *n = new Number(overflow_digit);
                     prependNumber(n);
                 }
             }
@@ -129,7 +135,6 @@ class BigNumber {
                 for(unsigned i = 0; i < n/DIGITS_PER_NUM; i++)
                 {
                     Number *n = new Number();
-                    n->value = 0;
                     appendNumber(n);
                 }
                 
@@ -142,8 +147,7 @@ class BigNumber {
         void setOne()
         {
             clearNumbers();
-            Number *n = new Number;
-            n->value = 1;
+            Number *n = new Number(1);
             prependNumber(n);
         }
         
@@ -167,7 +171,7 @@ class BigNumber {
         // Ignores leading newlines and non-digits
         void read()
         {
-            Number *num = new Number;
+            Number *num = new Number();
             int chars_read = 0;
 
             for(char kar = readCharacter(); kar != '\n'; kar = cin.get())
@@ -230,8 +234,7 @@ class BigNumber {
 
                 if(numRes == nullptr)
                 {
-                    Number *n = new Number;
-                    n->value = value;
+                    Number *n = new Number(value);
                     prependNumber(n);
                 }
                 else 
@@ -306,8 +309,7 @@ class BigNumber {
                     int value = product % max_power_of_ten;
                     overflow = product / max_power_of_ten;
 
-                    Number *n = new Number;
-                    n->value = value;
+                    Number *n = new Number(value);
 
                     sub_product.prependNumber(n);
                     add(zero, sub_product, false);
