@@ -138,6 +138,15 @@ class BigNumber {
         }
 
     public:
+
+        void setOne()
+        {
+            clearNumbers();
+            Number *n = new Number;
+            n->value = 1;
+            prependNumber(n);
+        }
+        
         // Prints the value of this BigNumber to cout
         // without leading zeros
         void print()
