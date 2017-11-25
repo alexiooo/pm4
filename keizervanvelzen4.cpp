@@ -38,11 +38,10 @@ struct Number {
 };
 
 class BigNumber {
-
-
     private:
         // Amount of digits in one number object
         const static int DIGITS_PER_NUM = 9;
+        const static int MAX_POWER_TEN = powl(10, DIGITS_PER_NUM);
 
         Number *head = nullptr;  // Most significant number(s)
         Number *tail = nullptr;  // Least significant number(s)
@@ -114,14 +113,13 @@ class BigNumber {
                 if(isZero()) return;
 
                 char overflow_digit = 0;
-                int max_power_of_ten = powl(10, DIGITS_PER_NUM);
 
                 for(Number *n = tail; n != nullptr; n = n->prev)
                 {
                     n->value *= 10;
                     n->value += overflow_digit;
-                    overflow_digit = n->value / max_power_of_ten;
-                    n->value = n->value % max_power_of_ten;
+                    overflow_digit = n->value / MAX_POWER_TEN;
+                    n->value = n->value % MAX_POWER_TEN;
                 }
 
                 if(overflow_digit != 0)
@@ -215,9 +213,6 @@ class BigNumber {
 
             int overflow = 0;
 
-            const int max_power_of_ten = powl(10, DIGITS_PER_NUM);
-
-
             if(numA == nullptr) numA = Number::getZero();
             if(numB == nullptr) numB = Number::getZero();
 
@@ -229,8 +224,8 @@ class BigNumber {
 
                 if(numRes != nullptr) sum += numRes->value;
 
-                int value = sum % max_power_of_ten;
-                overflow = sum / max_power_of_ten;
+                int value = sum % MAX_POWER_TEN;
+                overflow = sum / MAX_POWER_TEN;
 
                 if(numRes == nullptr)
                 {
@@ -287,8 +282,6 @@ class BigNumber {
             BigNumber zero;
             BigNumber sub_product;
 
-            const int max_power_of_ten = powl(10, DIGITS_PER_NUM);
-
             int overflow = 0;
             int a_count = 0;
 
@@ -306,8 +299,8 @@ class BigNumber {
                     unsigned long long product = a->value * (unsigned long long)b->value;
                     product += overflow;
 
-                    int value = product % max_power_of_ten;
-                    overflow = product / max_power_of_ten;
+                    int value = product % MAX_POWER_TEN;
+                    overflow = product / MAX_POWER_TEN;
 
                     Number *n = new Number(value);
 
