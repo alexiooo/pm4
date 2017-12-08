@@ -1,13 +1,29 @@
-\documentclass[13pt]{article}
+\documentclass[10pt]{article}
+
+\setlength{\textheight}{25.7cm}
+\setlength{\textwidth}{16cm}
+\setlength{\unitlength}{1mm}
+\setlength{\topskip}{2.5truecm}
+\topmargin 260mm \advance \topmargin -\textheight 
+\divide \topmargin by 2 \advance \topmargin -1in 
+\headheight 0pt \headsep 0pt \leftmargin 210mm \advance
+\leftmargin -\textwidth 
+\divide \leftmargin by 2 \advance \leftmargin -1in 
+\oddsidemargin \leftmargin \evensidemargin \leftmargin
+\parindent=0pt
+
 
 \usepackage{microtype}
 \usepackage{array}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage[english]{babel}
+\usepackage[english,dutch]{babel}
 \usepackage{listings}
 \usepackage{titling}
 \usepackage[a4paper]{geometry}
+\frenchspacing
+
+\selectlanguage{dutch}
 
 \renewcommand{\baselinestretch}{1.5}
 \renewcommand{\maketitlehooka}{\fontfamily{phv}\selectfont}
@@ -45,13 +61,16 @@ De Fibonacci rij is als volgt gedefinieerd:
            \end{cases}
 \end{equation*}
 
-De waardes in deze rij worden snel heel groot.
+De waardes in deze rij worden snel heel groot. Zie Figuur~\ref{fig:fibo}.
 
+\begin{figure}[!ht]
 \begin{center}
     \includegraphics[scale=0.6]{graph.png}
 \end{center}
+\caption{Plot van de Fibonacci-getallen}\label{fig:fibo}
+\end{figure}
 
-Het is bewezen dat de groei van de rij van exponentiele orde is. Dankzij de gesloten vorm voor de Fibonacci rij $a_n={{\left(\sqrt{5}+1\right)^{n}+\left(1-\sqrt{5}\right)^{n}}\over{2^{n}}}$ is het bewijs hiervan simpel \cite{proof}.
+Het is bewezen dat de groei van de rij van exponentiele orde is. Dankzij de gesloten vorm voor de Fibonacci rij $a_n={{\left(\sqrt{5}+1\right)^{n}+\left(1-\sqrt{5}\right)^{n}}\over{2^{n}\sqrt{5}}}$ is het bewijs hiervan simpel \cite{proof}.
 
 \section{Tijd}
 
@@ -74,10 +93,13 @@ Totaal & 8 & 7 \\
     \bibitem{proof} Prove Upper Bound (Big O) for Fibonacci's Sequence? Geraadpleegd op 2/12/2017, van https://math.stackexchange.com/q/674547
 \end{thebibliography}
 
-\section{Code}
-
+\section*{Code}
+Hieronder komen de broncode van de drie bestanden
+\subsection*{BigNumber.h}
 \lstinputlisting{keizervanvelzen_bignumber.h}
+\subsection*{BigNumber.cpp}
 \lstinputlisting{keizervanvelzen_bignumber.cpp}
+\subsection*{main.cpp}
 \lstinputlisting{keizervanvelzen_main.cpp}
 
 \end{document}
