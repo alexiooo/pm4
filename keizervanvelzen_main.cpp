@@ -86,13 +86,15 @@ int readBigNumberIndex() {
     int bg_index = -1;
     while (bg_index < 0)
     {
-        char kar = readCharacter();
+        char kar = cin.get();
+        if (kar == '\n') {
+            cout << "Je moet kiezen tussen A, B of C!" << endl;
+            continue;
+        }
         if (kar>'Z')
             kar -= 'a'-'A';
         if ('A' <= kar && kar <= 'C'){
             bg_index = kar -= 'A';
-        } else if (kar == '\n') {
-            cout << "Je moet kiezen tussen A, B of C!" << endl;
         }
     }
     cin.ignore( numeric_limits<streamsize>::max(), '\n' );
@@ -106,7 +108,7 @@ bool handleInput(BigNumber bg_array[]) {
     int op1, op2; // Index of the operand numbers (if used)
     int kar = cin.get();
 
-    if (kar < '1' || kar > '7') {
+    if (kar < '1' || kar > '5') {
         if (kar == '\n'){
             cout << "Optie niet herkend, probeer opnieuw..." << endl;
         }
