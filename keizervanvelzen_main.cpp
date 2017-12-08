@@ -1,4 +1,4 @@
-//  vIERDE opdracht voor Programmeermethoden
+//  Vierde opdracht voor Programmeermethoden
 //  Auteurs:
 //        Alex Keizer (s2046253), eerstejaars Informatica (2017)
 //        Léon van Velzen (s2037033), eerstejaars Informatica (2017)
@@ -13,7 +13,7 @@
 //    getallen kan rekenen.
 //  Ondersteunde operaties zijn: zetten van een waarde, optellen,
 //    vermenigvuldigen, kopieren en het uitrekenen van fibonacci getallen
-//    (tot het 100000e Fibonacci getal)
+//    (t/m het 100000e Fibonacci getal)
 
 #include <iostream>
 #include <cmath>

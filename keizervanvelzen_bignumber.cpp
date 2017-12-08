@@ -263,7 +263,6 @@ void BigNumber::fibonacci(int n) {
 
     if(n <= 2) setOne();
     else {
-        BigNumber zero;
         BigNumber previous;
         BigNumber current;
 
@@ -285,8 +284,8 @@ void BigNumber::fibonacci(int n) {
             current = next;
         }
 
-        previous.clearNumbers(); // Prevent memory leak
         *this = current;
+        current.head = current.tail = nullptr;
     }
 }
 
@@ -301,8 +300,6 @@ void BigNumber::copyBigNumber(BigNumber &c){
 }
 
 void BigNumber::multiply(BigNumber &a_big, BigNumber &b_big) {
-    clearNumbers();
-
     BigNumber zero;
     BigNumber sub_product;
 
@@ -312,7 +309,18 @@ void BigNumber::multiply(BigNumber &a_big, BigNumber &b_big) {
     if( a_big.isZero() || b_big.isZero() ){
         appendNumber( new Number(0) );
         return;
+    } else if ( tail != nullptr && (a_big.tail == tail || b_big.tail == tail) ){
+        BigNumber res;
+        res.multiply(a_big, b_big);
+        clearNumbers();
+        tail = res.tail;
+        res.tail = nullptr;
+        head = res.head;
+        res.head = nullptr;
+        return;
     }
+
+    clearNumbers();
 
 
     for(Number *a = a_big.tail; a != nullptr; a = a->prev)
