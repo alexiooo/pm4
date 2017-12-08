@@ -1,4 +1,4 @@
-//  vIERDE opdracht voor Programmeermethoden
+//  Vierde opdracht voor Programmeermethoden
 //  Auteurs:
 //        Alex Keizer (s2046253), eerstejaars Informatica (2017)
 //        Léon van Velzen (s2037033), eerstejaars Informatica (2017)
@@ -13,7 +13,7 @@
 //    getallen kan rekenen.
 //  Ondersteunde operaties zijn: zetten van een waarde, optellen,
 //    vermenigvuldigen, kopieren en het uitrekenen van fibonacci getallen
-//    (tot het 100000e Fibonacci getal)
+//    (t/m het 100000e Fibonacci getal)
 
 #include <iostream>
 #include <cmath>
@@ -73,12 +73,10 @@ void printMenu(BigNumber bg_array[]) {
     }
     cout << endl << "Je kunt kiezen uit de volgende operaties: " << endl;
     cout << "\t1. Zet een waarde" << endl;
-    cout << "\t2. Vul met 0" << endl;
-    cout << "\t3. Zet op 1" << endl;
-    cout << "\t4. Tel twee getallen op" << endl;
-    cout << "\t5. Vermenigvuldig twee getallen" << endl;
-    cout << "\t6. Bereken Fibonacci getal" << endl;
-    cout << "\t7. Kopieer getal" << endl << endl << endl << endl;
+    cout << "\t2. Tel twee getallen op" << endl;
+    cout << "\t3. Vermenigvuldig twee getallen" << endl;
+    cout << "\t4. Bereken Fibonacci getal" << endl;
+    cout << "\t5. Kopieer getal" << endl << endl << endl << endl;
     cout << "Kies een optie, gevolgd door Enter:" << endl;
 }
 
@@ -129,16 +127,6 @@ bool handleInput(BigNumber bg_array[]) {
         break;
 
     case '2':
-        cout << "Geef het aantal vakjes dat je met 0 wilt vullen, "
-            << "gevolg door Enter: (max 100000)" << endl;
-        bg_array[result_bg].setZero( readNumber(100000) );
-        break;
-
-    case '3':
-        bg_array[result_bg].setOne();
-        break;
-
-    case '4':
         cout << "Geef het eerste getal dat je wilt optellen, "
             << "gevolgd door een Enter: (A,B of C)" << endl;
         op1 = readBigNumberIndex();
@@ -147,7 +135,7 @@ bool handleInput(BigNumber bg_array[]) {
         bg_array[result_bg].add( bg_array[op1], bg_array[op2] );
         break;
 
-    case '5':
+    case '3':
         cout << "Geef het eerste getal dat je wilt vermenigvuldigen, "
             << "gevolgd door een Enter: (A,B of C)" << endl;
         op1 = readBigNumberIndex();
@@ -156,7 +144,7 @@ bool handleInput(BigNumber bg_array[]) {
         bg_array[result_bg].multiply( bg_array[op1], bg_array[op2] );
         break;
 
-    case '6': {
+    case '4': {
         cout << "Geef nu welk Fibonacci getal je wilt berekenen, "
             << "gevolgd door Enter: (max 100000)" << endl;
         int n = readNumber(100000);
@@ -166,7 +154,7 @@ bool handleInput(BigNumber bg_array[]) {
         break;
     }
 
-    case '7':
+    case '5':
         cout << "Kies een getal om vandaan te kopieren, gevolgd door Enter: "
             << endl;
         op1 = readBigNumberIndex();

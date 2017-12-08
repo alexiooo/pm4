@@ -1,15 +1,24 @@
+
+#ifndef BIGNUMBER_H__INCLUDED
+#define BIGNUMBER_H__INCLUDED
+
 struct Number {
     int value;
 
     // Next goes from head to tail
     // That is, from Most Significant to Least Significant
     Number *next;
+    // Previous number
     Number *prev;
 
+    // Gets a number with value zero and prev=next=itself
     static Number *getZero();
 
+    // Constructor with value 0, next=prev=nullptr
     Number();
+    // Constructor with value v, next=prev=nullptr
     Number(int v);
+    // Constructor with value v, use given next and prev
     Number(int v, Number *next, Number *prev);
 };
 
@@ -41,13 +50,13 @@ class BigNumber {
     void shift(unsigned long long n);
 
 public:
-    // Constructor
+    // Constructor, set head and tail to nullptr
     BigNumber();
 
-    // Destructor, simply calls clearNumbers()
+    // Destructor, calls clearNumbers()
     ~BigNumber();
 
-    // Deletes all numbers, set head and tail to nullptr
+    // Delete all numbers and set head and tail to nullptr
     void clearNumbers();
 
     // Set BigNumber to one Number with value 1
@@ -79,3 +88,5 @@ public:
     // Multiplies two BigNumbers, stores result in this BigNumber
     void multiply(BigNumber &a_big, BigNumber &b_big);
 };
+
+#endif // BIGNUMBER_H__INCLUDED
