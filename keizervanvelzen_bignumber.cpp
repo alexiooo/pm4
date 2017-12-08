@@ -313,10 +313,8 @@ void BigNumber::multiply(BigNumber &a_big, BigNumber &b_big) {
         BigNumber res;
         res.multiply(a_big, b_big);
         clearNumbers();
-        tail = res.tail;
-        res.tail = nullptr;
-        head = res.head;
-        res.head = nullptr;
+        *this = res;
+        res.head = res.tail = nullptr;
         return;
     }
 
