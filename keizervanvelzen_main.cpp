@@ -7,7 +7,7 @@
 //      Windows 10 met MinGW64 GCC versie 6.3.0
 //      Debian GNU/Linux 9 GCC versie 6.3.0
 //
-//  Aan gewerkt in de periode 23/11/2017 tot 08/12/2017
+//  Aan gewerkt in de periode 23/11/2017 tot 10/12/2017
 //
 //  Programma dat dmv dubbel-verbonden pointerlijsten met arbitrair grote
 //    getallen kan rekenen.

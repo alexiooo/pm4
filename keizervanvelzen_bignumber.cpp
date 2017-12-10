@@ -286,6 +286,7 @@ void BigNumber::fibonacci(int n) {
 
         *this = current;
         current.head = current.tail = nullptr;
+        next.head = next.tail = nullptr;
     }
 }
 
@@ -307,6 +308,7 @@ void BigNumber::multiply(BigNumber &a_big, BigNumber &b_big) {
     int a_count = 0;
 
     if( a_big.isZero() || b_big.isZero() ){
+        clearNumbers();
         appendNumber( new Number(0) );
         return;
     } else if ( tail != nullptr && (a_big.tail == tail || b_big.tail == tail) ){
